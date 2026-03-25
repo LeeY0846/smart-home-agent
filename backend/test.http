@@ -1,0 +1,15 @@
+@server_host = http://localhost:5050
+
+###
+GET {{server_host}}
+
+###
+GET {{server_host}}/test-stream
+
+###
+POST {{server_host}}/test-send
+Content-Type: application/json
+
+{
+    "command": "Turn on all the lights"
+}
