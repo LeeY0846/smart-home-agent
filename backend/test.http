@@ -11,5 +11,21 @@ POST {{server_host}}/test-send
 Content-Type: application/json
 
 {
-    "command": "Turn on all the lights"
+    "command": "How many devices are in the room"
+}
+
+###
+POST {{server_host}}/test-loop
+Content-Type: application/json
+
+{
+    "command": "How many devices are in the room"
+}
+
+###
+POST {{server_host}}/test-loop
+Content-Type: application/json
+
+{
+    "command": "Turn on the air conditioner in living room and set its temperature to 25"
 }

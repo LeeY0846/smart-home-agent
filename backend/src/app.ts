@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import type { ContentBlock } from "@anthropic-ai/sdk/resources";
-import { sendMessage, streamMessage } from "./client.js";
+import { loopAgent, sendMessage, streamMessage } from "./client.js";
 
 const app = express();
 const port = Number(process.env.PORT) || 5050;
@@ -23,9 +23,7 @@ app.get("/test-stream", async (_req, res) => {
   const message = await stream.finalMessage();
 
   res.json({
-    responses: message.content
-      .filter((c) => c.type == "text")
-      .map((c) => c.text),
+    responses: message.content,
     tokenUsage: message.usage,
   });
 });
@@ -34,6 +32,16 @@ app.post("/test-send", async (req, res) => {
   const { command } = req.body;
 
   const message = await sendMessage([{ content: command, role: "user" }]);
+  res.json({
+    responses: message.content,
+    tokenUsage: message.usage,
+  });
+});
+
+app.post("/test-loop", async (req, res) => {
+  const { command } = req.body;
+
+  const message = await loopAgent(command);
   res.json({
     responses: message.content,
     tokenUsage: message.usage,
