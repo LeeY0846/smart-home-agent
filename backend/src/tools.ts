@@ -1,7 +1,7 @@
 import type { ToolUnion } from "@anthropic-ai/sdk/resources";
-import { json } from "zod";
+import type { DeviceManager } from "./libs/deviceManager.js";
 
-export const TOOLS: ToolUnion[] = [
+export const TOOLS = [
   {
     name: "read_weather",
     description: "Read the current, lowest, and highest temperature.",
@@ -47,7 +47,18 @@ export const TOOLS: ToolUnion[] = [
       required: ["device_name", "power"],
     },
   },
-];
+  {
+    name: "read_time",
+    description: "Get the current time of the system.",
+    input_schema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+] as const satisfies ToolUnion[];
+
+export type ToolName = (typeof TOOLS)[number]["name"];
 
 export function readWeather() {
   return JSON.stringify({
@@ -65,12 +76,8 @@ function createDevice(name: string, isPowerOn: boolean, value?: number) {
   });
 }
 
-export function readDevices() {
-  return JSON.stringify([
-    createDevice("kitchen-light", true),
-    createDevice("living-room-air-conditioner", false, 21),
-    createDevice("master-room-air-conditioner", true, 19),
-  ]);
+export function readDevices(manager: DeviceManager) {
+  return manager.getDevicesJson();
 }
 
 interface DeviceAdjustDTO {
@@ -79,23 +86,7 @@ interface DeviceAdjustDTO {
   value: number;
 }
 
-export function adjustDevice(args: Array<any>) {
+export function adjustDevice(...args: Array<any>) {
   console.log("Adjusting Device", ...args);
   return "Device adjusted";
-}
-
-export function handleTool(
-  toolName: string, // "read_weather" | "read_devices" | "adjust_device",
-  args: any,
-) {
-  switch (toolName) {
-    case "read_weather":
-      return () => readWeather();
-    case "read_devices":
-      return () => readDevices();
-    case "adjust_device":
-      return () => adjustDevice(args);
-    default:
-      throw new TypeError("No such tool exists");
-  }
 }

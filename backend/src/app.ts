@@ -43,8 +43,7 @@ app.post("/test-loop", async (req, res) => {
 
   const message = await loopAgent(command);
   res.json({
-    responses: message.content,
-    tokenUsage: message.usage,
+    responses: message.response,
   });
 });
 

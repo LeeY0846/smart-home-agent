@@ -27,5 +27,5 @@ POST {{server_host}}/test-loop
 Content-Type: application/json
 
 {
-    "command": "Turn on the air conditioner in living room and set its temperature to 25"
+    "command": "It's a little bit cold in the living room"
 }
