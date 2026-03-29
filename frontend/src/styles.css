@@ -257,3 +257,213 @@ a {
     transform: translateY(0);
   }
 }
+
+/* ─── Pixel Art Theme ─────────────────────────────────────── */
+
+/* Responsive font scale — all pixel-art text uses these vars */
+:root {
+  --px-size-xs:   8px;   /* tiny value labels (temp, speed, vol) */
+  --px-size-sm:   9px;   /* status text, secondary labels        */
+  --px-size-base: 10px;  /* main device/room labels              */
+  --px-size-md:   11px;  /* textarea, primary content            */
+  --px-size-lg:   13px;  /* section headers                      */
+  --px-btn-font:  0.55rem;
+  --px-btn-pad:   5px 10px;
+}
+
+/* Responsive icon sizes — CSS overrides SVG presentation attrs */
+.px-icon-room { width: 28px; height: 28px; }
+.px-icon-card { width: 22px; height: 22px; }
+
+@media (min-width: 1280px) {
+  :root {
+    --px-size-xs:   10px;
+    --px-size-sm:   11px;
+    --px-size-base: 12px;
+    --px-size-md:   13px;
+    --px-size-lg:   15px;
+    --px-btn-font:  0.6rem;
+    --px-btn-pad:   6px 12px;
+  }
+
+  .px-icon-room { width: 32px; height: 32px; }
+  .px-icon-card { width: 26px; height: 26px; }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --px-size-xs:   12px;
+    --px-size-sm:   13px;
+    --px-size-base: 14px;
+    --px-size-md:   16px;
+    --px-size-lg:   18px;
+    --px-btn-font:  0.7rem;
+    --px-btn-pad:   8px 16px;
+  }
+
+  .px-icon-room { width: 40px; height: 40px; }
+  .px-icon-card { width: 32px; height: 32px; }
+}
+
+@media (max-width: 639px) {
+  :root {
+    --px-size-xs:   8px;
+    --px-size-sm:   9px;
+    --px-size-base: 10px;
+    --px-size-md:   11px;
+    --px-size-lg:   13px;
+  }
+
+  .px-icon-room { width: 28px; height: 28px; }
+  .px-icon-card { width: 22px; height: 22px; }
+
+  /* Touch-friendly buttons on mobile */
+  :root {
+    --px-btn-font: 0.55rem;
+    --px-btn-pad:  8px 14px;
+  }
+
+  .px-btn {
+    min-height: 40px;
+  }
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  --px-bg: #0d0d1a;
+  --px-wall: #1e1e2f;
+  --px-floor: #181828;
+  --px-border: #3a3a5c;
+  --px-border-bright: #5a5a8a;
+  --px-text: #c8c8e8;
+  --px-text-dim: #6a6a9a;
+  --px-panel: #0f0f1e;
+  --px-card: #1a1a2e;
+  --px-green: #4ade80;
+  --px-red: #f87171;
+  --px-amber: #fbbf24;
+  --px-blue: #7ec8e3;
+  --px-purple: #a78bfa;
+}
+
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1.8;
+}
+
+.px-shadow {
+  box-shadow: 3px 3px 0 #000;
+}
+
+.px-shadow-sm {
+  box-shadow: 2px 2px 0 #000;
+}
+
+.px-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: var(--px-btn-font);
+  padding: var(--px-btn-pad);
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: none;
+  line-height: 1;
+  display: inline-block;
+}
+
+.px-btn:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+.px-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.px-btn:disabled:active {
+  box-shadow: 2px 2px 0 #000;
+  transform: none;
+}
+
+/* Room glow when light is on */
+.room-lit {
+  background-color: rgba(255, 232, 124, 0.04);
+  box-shadow:
+    inset 0 0 50px 16px rgba(255, 232, 124, 0.22),
+    inset 0 0 16px 6px rgba(255, 232, 124, 0.16);
+}
+
+/* Room AC tint when on */
+.room-ac {
+  background-color: rgba(126, 200, 227, 0.03);
+  box-shadow:
+    inset 0 0 50px 16px rgba(126, 200, 227, 0.18),
+    inset 0 0 16px 6px rgba(126, 200, 227, 0.12);
+}
+
+/* Scanline overlay */
+.px-scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.07) 2px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+  z-index: 2;
+}
+
+/* Blinking cursor for streaming messages */
+@keyframes px-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.px-cursor::after {
+  content: '▮';
+  animation: px-blink 1s step-end infinite;
+  color: var(--px-blue);
+  margin-left: 2px;
+}
+
+/* Narrow pixel scrollbar */
+.px-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.px-scroll::-webkit-scrollbar-track {
+  background: var(--px-bg);
+}
+
+.px-scroll::-webkit-scrollbar-thumb {
+  background: var(--px-border);
+}
+
+/* Pixel tile floor pattern */
+.px-floor {
+  background-color: var(--px-floor);
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.02) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.02) 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+}
+
+/* Device icon pulse when active — opacity only, no transform (keeps pixels sharp) */
+@keyframes px-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.px-pulse {
+  animation: px-pulse 1.8s step-end infinite;
+}
