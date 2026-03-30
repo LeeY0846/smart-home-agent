@@ -1,23 +1,44 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/about')({
-  component: About,
-})
+export const Route = createFileRoute('/about')({ component: About })
 
 function About() {
   return (
-    <main className="page-wrap px-4 py-12">
-      <section className="island-shell rounded-2xl p-6 sm:p-8">
-        <p className="island-kicker mb-2">About</p>
-        <h1 className="display-title mb-3 text-4xl font-bold text-[var(--sea-ink)] sm:text-5xl">
-          A small starter with room to grow.
-        </h1>
-        <p className="m-0 max-w-3xl text-base leading-8 text-[var(--sea-ink-soft)]">
-          TanStack Start gives you type-safe routing, server functions, and
-          modern SSR defaults. Use this as a clean foundation, then layer in
-          your own routes, styling, and add-ons.
-        </p>
-      </section>
-    </main>
+    <div
+      className="font-pixel flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-16"
+      style={{ backgroundColor: 'var(--px-bg)', color: 'var(--px-text)' }}
+    >
+      <div className="pointer-events-none fixed inset-0 px-scanlines" />
+
+      <div className="relative z-10 flex max-w-md flex-col gap-5" style={{ width: '100%' }}>
+        <div style={{ fontSize: 'var(--px-size-lg)' }}>{'>'} ABOUT</div>
+
+        <div style={{ height: '2px', backgroundColor: 'var(--px-border)' }} />
+
+        <div style={{ fontSize: 'var(--px-size-base)', color: 'var(--px-amber)', lineHeight: 2 }}>
+          PIXEL HOME
+        </div>
+
+        <div style={{ fontSize: 'var(--px-size-sm)', color: 'var(--px-text-dim)', lineHeight: 2.2 }}>
+          AI-POWERED SMART HOME CONTROL DEMO.
+          <br />
+          BUILT WITH REACT + EXPRESS + CLAUDE AI.
+        </div>
+
+        <Link
+          to="/"
+          className="px-btn"
+          style={{
+            backgroundColor: 'var(--px-blue)',
+            color: '#0d0d1a',
+            textDecoration: 'none',
+            alignSelf: 'flex-start',
+            marginTop: '8px',
+          }}
+        >
+          {'<'}- BACK
+        </Link>
+      </div>
+    </div>
   )
 }

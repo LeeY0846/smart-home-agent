@@ -87,7 +87,6 @@ export default function DeviceCard({ device }: Props) {
         style={{
           backgroundColor: isOn ? '#1a1a2e' : accent,
           color: isOn ? 'var(--px-text-dim)' : '#0d0d1a',
-          borderColor: isOn ? 'var(--px-border)' : '#000',
           width: '4.5em',
           textAlign: 'center',
         }}

@@ -76,12 +76,8 @@ export default function HouseView() {
 
       {/* House grid */}
       <div
-        className="flex-1"
+        className="flex-1 px-house-grid"
         style={{
-          display: 'grid',
-          gridTemplateAreas: '"kitchen master" "living living"',
-          gridTemplateRows: '1fr 1fr',
-          gridTemplateColumns: '1fr 1fr',
           padding: '10px',
           gap: '3px',
         }}

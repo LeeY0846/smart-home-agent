@@ -51,7 +51,7 @@ export default function ControlPanel() {
                   {onCount}/{roomDevices.length}
                 </span>
               </div>
-              <div className="flex flex-col gap-1 px-3 pb-2">
+              <div className="px-card-grid px-3 pb-2">
                 {roomDevices.map((d) => (
                   <DeviceCard key={d.name} device={d} />
                 ))}
