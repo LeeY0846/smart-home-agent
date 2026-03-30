@@ -19,11 +19,19 @@ export interface ChatMessage {
   status: 'streaming' | 'done'
 }
 
+const VALUE_RANGE: Partial<Record<DeviceType, [number, number]>> = {
+  ac: [16, 30],
+  fridge: [1, 10],
+  fan: [1, 3],
+  speaker: [0, 100],
+}
+
 interface State {
   devices: Device[]
   messages: ChatMessage[]
   isStreaming: boolean
   toggleDevice: (name: string) => void
+  adjustValue: (name: string, delta: number) => void
   addMessage: (msg: ChatMessage) => void
   appendContent: (id: string, chunk: string) => void
   setStatus: (id: string, status: ChatMessage['status']) => void
@@ -57,6 +65,17 @@ export const useStore = create<State>((set) => ({
       devices: s.devices.map((d) =>
         d.name === name ? { ...d, power: d.power === 'on' ? 'off' : 'on' } : d,
       ),
+    })),
+
+  adjustValue: (name, delta) =>
+    set((s) => ({
+      devices: s.devices.map((d) => {
+        if (d.name !== name || d.value === undefined) return d
+        const range = VALUE_RANGE[d.type]
+        if (!range) return d
+        const [min, max] = range
+        return { ...d, value: Math.min(max, Math.max(min, d.value + delta)) }
+      }),
     })),
 
   addMessage: (msg) => set((s) => ({ messages: [...s.messages, msg] })),

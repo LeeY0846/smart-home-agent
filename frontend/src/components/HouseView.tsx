@@ -83,7 +83,7 @@ export default function HouseView() {
         }}
       >
         <Room area="kitchen" label="KITCHEN" devices={byRoom['kitchen']} />
-        <Room area="master" label="MASTER BED" devices={byRoom['master-bedroom']} />
+        <Room area="master" label="MASTER ROOM" devices={byRoom['master-bedroom']} />
         <Room area="living" label="LIVING ROOM" devices={byRoom['living-room']} />
       </div>
 

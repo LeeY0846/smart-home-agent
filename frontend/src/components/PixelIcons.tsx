@@ -68,16 +68,16 @@ const FAN_MAP = [
   '...##...',
 ] as const
 
-// TV — screen + stand
+// TV — wide screen with stand
 const TV_MAP = [
   '########',
   '#......#',
   '#......#',
   '#......#',
+  '#......#',
   '########',
-  '.######.',
   '...##...',
-  '.######.',
+  '..####..',
 ] as const
 
 // Refrigerator — tall box with door split and handle

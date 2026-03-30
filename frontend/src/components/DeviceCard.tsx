@@ -1,9 +1,28 @@
+import { useCallback, useRef } from 'react'
 import type { Device } from '#/store/smartHomeStore'
 import { useStore } from '#/store/smartHomeStore'
 import { DeviceIcon, accentFor } from './PixelIcons'
 
 interface Props {
   device: Device
+}
+
+function useHoldRepeat(onTick: () => void) {
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const start = useCallback(() => {
+    onTick()
+    intervalRef.current = setInterval(onTick, 120)
+  }, [onTick])
+
+  const stop = useCallback(() => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }, [])
+
+  return { start, stop }
 }
 
 function valueLabel(device: Device): string | null {
@@ -23,8 +42,14 @@ function valueLabel(device: Device): string | null {
 
 export default function DeviceCard({ device }: Props) {
   const toggleDevice = useStore((s) => s.toggleDevice)
+  const adjustValue = useStore((s) => s.adjustValue)
   const isOn = device.power === 'on'
   const accent = accentFor(device.type)
+
+  const decrement = useCallback(() => adjustValue(device.name, -1), [adjustValue, device.name])
+  const increment = useCallback(() => adjustValue(device.name, +1), [adjustValue, device.name])
+  const dec = useHoldRepeat(decrement)
+  const inc = useHoldRepeat(increment)
 
   return (
     <div
@@ -69,12 +94,32 @@ export default function DeviceCard({ device }: Props) {
               {isOn ? 'ON' : 'OFF'}
             </span>
             {isOn && valueLabel(device) && (
-              <span
-                className="font-pixel"
-                style={{ fontSize: 'var(--px-size-sm)', color: accent, marginLeft: '2px' }}
-              >
-                {valueLabel(device)}
-              </span>
+              <>
+                <span
+                  className="font-pixel"
+                  style={{ fontSize: 'var(--px-size-sm)', color: accent, marginLeft: '2px' }}
+                >
+                  {valueLabel(device)}
+                </span>
+                <button
+                  className="px-btn"
+                  onMouseDown={dec.start}
+                  onMouseUp={dec.stop}
+                  onMouseLeave={dec.stop}
+                  style={{ padding: '2px 5px', fontSize: 'var(--px-size-sm)', lineHeight: 1 }}
+                >
+                  -
+                </button>
+                <button
+                  className="px-btn"
+                  onMouseDown={inc.start}
+                  onMouseUp={inc.stop}
+                  onMouseLeave={inc.stop}
+                  style={{ padding: '2px 5px', fontSize: 'var(--px-size-sm)', lineHeight: 1 }}
+                >
+                  +
+                </button>
+              </>
             )}
           </div>
         </div>

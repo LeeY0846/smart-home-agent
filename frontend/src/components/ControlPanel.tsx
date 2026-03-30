@@ -5,7 +5,7 @@ import ChatPanel from './ChatPanel'
 const ROOMS: { id: 'kitchen' | 'living-room' | 'master-bedroom'; label: string }[] = [
   { id: 'kitchen', label: 'KITCHEN' },
   { id: 'living-room', label: 'LIVING ROOM' },
-  { id: 'master-bedroom', label: 'MASTER BED' },
+  { id: 'master-bedroom', label: 'MASTER ROOM' },
 ]
 
 export default function ControlPanel() {
