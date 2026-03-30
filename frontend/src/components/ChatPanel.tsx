@@ -87,18 +87,6 @@ export default function ChatPanel() {
       className="flex flex-1 flex-col overflow-hidden"
       style={{ backgroundColor: 'var(--px-panel)' }}
     >
-      {/* Section label */}
-      <div
-        className="font-pixel shrink-0 px-4 py-2"
-        style={{
-          borderBottom: '1px solid var(--px-border)',
-          fontSize: 'var(--px-size-sm)',
-          color: 'var(--px-text-dim)',
-        }}
-      >
-        AGENT CHAT
-      </div>
-
       {/* Message list */}
       <div
         className="px-scroll flex-1 overflow-y-auto p-3"

@@ -133,6 +133,10 @@ body {
   --px-purple: #a78bfa;
 }
 
+button {
+  user-select: none;
+}
+
 .font-pixel {
   font-family: 'Press Start 2P', monospace;
   line-height: 1.8;

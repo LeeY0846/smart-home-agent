@@ -27,7 +27,7 @@ function SmartHomeApp() {
 
       {/* Control panel */}
       <div
-        className={`flex-1 flex-col sm:flex sm:w-1/2 sm:flex-none ${activePanel === 'control' ? 'flex' : 'hidden'}`}
+        className={`flex-1 flex-col overflow-hidden sm:flex sm:w-1/2 sm:flex-none ${activePanel === 'control' ? 'flex' : 'hidden'}`}
       >
         <ControlPanel />
       </div>
