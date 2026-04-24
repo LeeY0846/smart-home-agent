@@ -165,6 +165,12 @@ button {
   justify-content: center;
 }
 
+.px-btn-linkedin:hover {
+  background-color: var(--px-blue);
+  border-color: var(--px-blue);
+  color: #000;
+}
+
 .px-btn:active {
   box-shadow: none;
   transform: translate(2px, 2px);

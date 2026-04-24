@@ -35,10 +35,41 @@ function About() {
             lineHeight: 2.2,
           }}
         >
-          AI-POWERED SMART HOME CONTROL DEMO.
+          A DEMO OF AI-POWERED SMART HOME CONTROL.
           <br />
-          BUILT WITH REACT + EXPRESS + CLAUDE AI.
+          CONTROLS 10 DEVICES ACROSS 3 ROOMS — LIGHTS,
+          <br />
+          ACS, FANS, AND MORE VIA A TOOL-USE LOOP.
+          <br />
+          <br />
+          BUILT WITH TANSTACK + EXPRESS + CLAUDE CODE.
+          <br />
+          MODEL: MINIMAX-M2.7.
         </div>
+
+        <div
+          style={{
+            fontSize: "var(--px-size-sm)",
+            color: "var(--px-text-dim)",
+            lineHeight: 2.2,
+          }}
+        >
+          AUTHOR: YANG LI
+        </div>
+
+        <a
+          href="https://www.linkedin.com/in/yang-li-1562a9309"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-btn px-btn-linkedin text-[--px-text-dim] hover:text-black"
+          style={{
+            fontSize: "var(--px-size-sm)",
+            textDecoration: "none",
+            alignSelf: "flex-start",
+          }}
+        >
+          CONNECT ON LINKEDIN
+        </a>
 
         <Link
           to="/"
