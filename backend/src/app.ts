@@ -117,6 +117,7 @@ app.get(
 
     const cleanup = (): void => {
       clearInterval(heartbeat);
+      jobs.delete(job.id);
       if (!res.writableEnded) {
         res.end();
       }
