@@ -7,6 +7,7 @@ import type { AgentJob, AgentSseEventMap } from "./types.js";
 import z, { safeParse } from "zod";
 import cors from "cors";
 import type { Device } from "./libs/deviceManager.js";
+import { logEntry, readLogs } from "./libs/logger.js";
 
 const app = express();
 const port = Number(process.env.PORT) || 5050;
@@ -78,14 +79,19 @@ app.post(
       return;
     }
 
-    console.log(devices);
-
     const jobId = crypto.randomUUID();
     jobs.set(jobId, {
       id: jobId,
       prompt: result.data,
       devices: devices,
       status: "pending",
+    });
+
+    logEntry({
+      timestamp: new Date().toISOString(),
+      jobId,
+      prompt: result.data,
+      status: "received",
     });
 
     res.status(202).json({
@@ -137,6 +143,13 @@ app.get(
       job.result = result.response;
       jobs.set(jobId, job);
 
+      logEntry({
+        timestamp: new Date().toISOString(),
+        jobId,
+        prompt: job.prompt,
+        status: "completed",
+      });
+
       cleanup();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -144,6 +157,14 @@ app.get(
       job.status = "failed";
       job.error = message;
       jobs.set(jobId, job);
+
+      logEntry({
+        timestamp: new Date().toISOString(),
+        jobId,
+        prompt: job.prompt,
+        status: "failed",
+        error: message,
+      });
 
       writeSse(res, "status", { status: "failed" });
       writeSse(res, "error", { message });
@@ -162,6 +183,11 @@ app.get("/stream-test", async (req, res) => {
     console.log("Channel closed");
     res.end();
   });
+});
+
+app.get("/logs", (req, res) => {
+  const limit = Number(req.query.limit) || 100;
+  res.json(readLogs(limit));
 });
 
 app.listen(port, () => {

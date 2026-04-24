@@ -19,5 +19,8 @@ benchmarks/graphs
 # .env
 .env
 
+# log folder
+logs
+
 # ignore additional files using core.excludesFile
 # https://git-scm.com/docs/gitignore
