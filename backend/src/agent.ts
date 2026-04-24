@@ -2,7 +2,11 @@ import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "./prompts/system.js";
 import { readDevices, readWeather, TOOLS, type ToolName } from "./tools.js";
 import type { ContentBlock, MessageParam } from "@anthropic-ai/sdk/resources";
-import { DeviceAdjustDTO, DeviceManager } from "./libs/deviceManager.js";
+import {
+  DeviceAdjustDTO,
+  DeviceManager,
+  type Device,
+} from "./libs/deviceManager.js";
 import z from "zod";
 import type { EmitAgentEvent, LoopAgentResult } from "./types.js";
 
@@ -126,15 +130,18 @@ export const streamMessage = (
 
 export async function loopAgent(
   initialMessage: string,
+  devices: Device[],
   emit?: EmitAgentEvent,
 ): Promise<LoopAgentResult> {
   const context: MessageParam[] = [{ role: "user", content: initialMessage }];
   const tokenUsage = 0;
-  const manager = new DeviceManager([
-    { name: "kitchen-light", isPowerOn: true },
-    { name: "living-room-air-conditioner", isPowerOn: false, value: 21 },
-    { name: "master-room-air-conditioner", isPowerOn: true, value: 19 },
-  ]);
+  // const manager = new DeviceManager([
+  //   { name: "kitchen-light", isPowerOn: true },
+  //   { name: "living-room-air-conditioner", isPowerOn: false, value: 21 },
+  //   { name: "master-room-air-conditioner", isPowerOn: true, value: 19 },
+  // ]);
+
+  const manager = new DeviceManager(devices);
 
   emit?.("status", { status: "started" });
 

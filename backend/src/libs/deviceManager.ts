@@ -8,7 +8,7 @@ export const DeviceAdjustDTO = z.object({
 
 export type DeviceAdjustDTO = z.infer<typeof DeviceAdjustDTO>;
 
-interface Device {
+export interface Device {
   name: string;
   isPowerOn: boolean;
   value?: number | undefined;
@@ -39,7 +39,11 @@ export class DeviceManager {
       this.devices.get(name)!.value = value;
     }
 
-    return `Adjust ${name} successfully`;
+    return JSON.stringify({
+      name,
+      power: isPowerOn ? "on" : "off",
+      value,
+    });
   }
 
   public getDevicesJson() {

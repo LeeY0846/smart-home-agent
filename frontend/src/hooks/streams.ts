@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { StreamState } from "./types";
 import { useMutation } from "@tanstack/react-query";
 import { createAgentJob, makeEventSource } from "#/actions/agent";
+import { DeviceAdjustDTO } from "#/actions/types";
 import type {
   AgentConnected,
   AgentStatus,
@@ -9,6 +10,7 @@ import type {
   AgentDone,
   AgentError,
 } from "#/actions/types";
+import { useStore } from "#/store/smartHomeStore";
 import type { ChatMessage } from "#/store/smartHomeStore";
 
 const initialStreamState: StreamState = {
@@ -36,6 +38,10 @@ export function useAgentStream(
   const [state, setState] = useState<StreamState>(initialStreamState);
   const eventSourceRef = useRef<EventSource | null>(null);
 
+  const adjustDevice = useStore((s) => s.adjustDevice);
+  const clearOngoingMessages = useStore((s) => s.clearOngoingMessages);
+  const devices = useStore((s) => s.devices);
+
   const closeStream = () => {
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
@@ -51,7 +57,7 @@ export function useAgentStream(
   }, []);
 
   const createJobMutation = useMutation({
-    mutationFn: createAgentJob,
+    mutationFn: (message: string) => createAgentJob(message, devices),
     onMutate: () => {
       closeStream();
       setState(initialStreamState);
@@ -86,22 +92,64 @@ export function useAgentStream(
           ...prev,
           status: payload.status,
         }));
+
+        clearOngoingMessages();
+
+        if (payload.status === "thinking") {
+          addMessage(crypto.randomUUID(), "Agent is thinking", "streaming");
+        }
       });
 
       eventSource.addEventListener("tool_use", (event) => {
         const payload = parseEventData<AgentToolUse>(
           event as MessageEvent<string>,
         );
+
         setState((prev) => ({
           ...prev,
           toolUses: [...prev.toolUses, payload],
         }));
 
+        clearOngoingMessages();
+
         addMessage(
           crypto.randomUUID(),
-          "Planning to use " + payload.name,
-          "done",
+          "Using tool " + payload.name,
+          "streaming",
         );
+
+        if (payload.name === "adjust_device") {
+          console.log(payload.output);
+          const adjustment = DeviceAdjustDTO.safeParse(
+            JSON.parse(payload.output),
+          );
+          if (!adjustment.success) {
+            console.log(adjustment.error);
+            clearOngoingMessages();
+            addMessage(
+              crypto.randomUUID(),
+              "Failed to use tool " + payload.name,
+              "done",
+            );
+            return;
+          }
+
+          adjustDevice(
+            adjustment.data.name,
+            adjustment.data.power === "on" ? true : false,
+            adjustment.data.value,
+          );
+
+          const deviceLabel =
+            devices.find((d) => d.name === adjustment.data.name)?.label ??
+            adjustment.data.name;
+          clearOngoingMessages();
+          addMessage(
+            crypto.randomUUID(),
+            "Adjusted device " + deviceLabel,
+            "done",
+          );
+        }
       });
 
       eventSource.addEventListener("done", (event) => {
@@ -114,8 +162,17 @@ export function useAgentStream(
           status: "completed",
         }));
         setStreaming(false);
-        for (const line of payload.response) {
-          addMessage(crypto.randomUUID(), line, "done");
+        clearOngoingMessages();
+        if (payload.response.length === 0) {
+          addMessage(
+            crypto.randomUUID(),
+            "The agent isn't responding. Please try again.",
+            "done",
+          );
+        } else {
+          for (const line of payload.response) {
+            addMessage(crypto.randomUUID(), line, "done");
+          }
         }
         closeStream();
       });
@@ -130,6 +187,7 @@ export function useAgentStream(
           status: "failed",
         }));
         setStreaming(false);
+        clearOngoingMessages();
         addMessage(
           crypto.randomUUID(),
           "Agent met an error: " + payload.message,

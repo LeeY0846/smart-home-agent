@@ -1,3 +1,5 @@
+import type { Device } from "./libs/deviceManager.js";
+
 export type AgentSseEventMap = {
   connected: { jobId: string };
   status: {
@@ -21,7 +23,7 @@ export type AgentJob = {
   id: string;
   prompt: string;
   status: "pending" | "running" | "completed" | "failed";
-  devices?: string[];
+  devices: Device[];
   result?: string[];
   error?: string;
 };

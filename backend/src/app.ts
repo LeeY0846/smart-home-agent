@@ -1,11 +1,12 @@
 import "dotenv/config";
 import express, { type RequestHandler } from "express";
 import type { ContentBlock } from "@anthropic-ai/sdk/resources";
-import { loopAgent, sendMessage, streamMessage } from "./client.js";
+import { loopAgent, sendMessage, streamMessage } from "./agent.js";
 import { type Response, type Request } from "express";
 import type { AgentJob, AgentSseEventMap } from "./types.js";
 import z, { safeParse } from "zod";
 import cors from "cors";
+import type { Device } from "./libs/deviceManager.js";
 
 const app = express();
 const port = Number(process.env.PORT) || 5050;
@@ -50,16 +51,6 @@ app.post("/test-send", async (req, res) => {
   });
 });
 
-app.post("/test-loop", async (req, res) => {
-  const { command } = req.body;
-
-  const message = await loopAgent(command);
-
-  res.json({
-    responses: message.response,
-  });
-});
-
 function setupSseHeaders(res: Response): void {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache, no-transform");
@@ -77,31 +68,36 @@ function writeSse<K extends keyof AgentSseEventMap>(
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 }
 
-app.post("/agent", (req: Request<{ message?: string }>, res) => {
-  const { message } = req.body;
-  const result = z.string().safeParse(message);
-  if (!result.success) {
-    res.status(400).json({ error: "message is required" });
-    return;
-  }
+app.post(
+  "/agent",
+  (req: Request<{ message?: string; devices: Device[] }>, res) => {
+    const { message, devices } = req.body;
+    const result = z.string().safeParse(message);
+    if (!result.success) {
+      res.status(400).json({ error: "message is required" });
+      return;
+    }
 
-  const jobId = crypto.randomUUID();
-  jobs.set(jobId, {
-    id: jobId,
-    prompt: result.data,
-    status: "pending",
-  });
+    console.log(devices);
 
-  res.status(202).json({
-    jobId,
-    streamUrl: `/agent/${jobId}/stream`,
-  });
-});
+    const jobId = crypto.randomUUID();
+    jobs.set(jobId, {
+      id: jobId,
+      prompt: result.data,
+      devices: devices,
+      status: "pending",
+    });
+
+    res.status(202).json({
+      jobId,
+      streamUrl: `/agent/${jobId}/stream`,
+    });
+  },
+);
 
 app.get(
   "/agent/:jobId/stream",
   async (req: Request<{ jobId: string }>, res): Promise<void> => {
-    console.log(req);
     const { jobId } = req.params;
     const job = jobs.get(jobId);
 
@@ -132,7 +128,7 @@ app.get(
       job.status = "running";
       jobs.set(jobId, job);
 
-      const result = await loopAgent(job.prompt, (event, data) => {
+      const result = await loopAgent(job.prompt, job.devices, (event, data) => {
         writeSse(res, event, data);
       });
 
