@@ -2,7 +2,7 @@ import { getDeviceListDTO } from "#/libs/deviceHelper";
 import type { Device } from "#/store/smartHomeStore";
 import type { CreateAgentResponse } from "./types";
 
-const BASE_URL = "http://localhost:5050" as const;
+const BASE_URL = "http://localhost:8787" as const;
 
 export async function createAgentJob(
   message: string,
