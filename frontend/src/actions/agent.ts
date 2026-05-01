@@ -2,7 +2,7 @@ import { getDeviceListDTO } from "#/libs/deviceHelper";
 import type { Device } from "#/store/smartHomeStore";
 import type { CreateAgentResponse } from "./types";
 
-const BASE_URL = "http://localhost:8787" as const;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export async function createAgentJob(
   message: string,
