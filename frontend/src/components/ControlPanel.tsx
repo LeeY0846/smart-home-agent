@@ -34,7 +34,10 @@ export default function ControlPanel() {
         <span>{">"} CONTROL PANEL</span>
         <Link
           to="/about"
-          style={{ fontSize: "var(--px-size-sm)", color: "var(--px-text-dim)" }}
+          style={{
+            fontSize: "var(--px-size-base)",
+            color: "var(--px-text-dim)",
+          }}
         >
           About v0.9
         </Link>

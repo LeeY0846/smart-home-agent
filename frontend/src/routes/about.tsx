@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Github, Linkedin } from "lucide-react";
 
 export const Route = createFileRoute("/about")({ component: About });
 
@@ -66,9 +67,27 @@ function About() {
             fontSize: "var(--px-size-sm)",
             textDecoration: "none",
             alignSelf: "flex-start",
+            gap: "8px",
           }}
         >
+          <Linkedin size={14} />
           CONNECT ON LINKEDIN
+        </a>
+
+        <a
+          href="https://github.com/LeeY0846/smart-home-agent"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-btn px-btn-linkedin text-[--px-text-dim] hover:text-black"
+          style={{
+            fontSize: "var(--px-size-sm)",
+            textDecoration: "none",
+            alignSelf: "flex-start",
+            gap: "8px",
+          }}
+        >
+          <Github size={14} />
+          VIEW GITHUB REPO
         </a>
 
         <Link

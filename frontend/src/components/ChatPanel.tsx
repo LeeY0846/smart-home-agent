@@ -164,6 +164,7 @@ export default function ChatPanel() {
             >
               <span>{">"} TURN ON KITCHEN LIGHT</span>
               <span>{">"} SET AC TO 20C</span>
+              <span>{">"} IT'S COLD RIGHT NOW</span>
             </div>
           </div>
         )}
