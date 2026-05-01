@@ -4,83 +4,15 @@ import type { ChatMessage } from "#/store/smartHomeStore";
 import { HouseIcon } from "./PixelIcons";
 import { useAgentStream } from "#/hooks/streams";
 
-function mockResponse(command: string): string {
-  const lower = command.toLowerCase();
-  if (
-    lower.includes("turn on") ||
-    lower.includes("switch on") ||
-    lower.includes("enable")
-  ) {
-    if (lower.includes("light") || lower.includes("lamp"))
-      return "DONE. Light is now ON.";
-    if (lower.includes("ac") || lower.includes("air"))
-      return "DONE. Air conditioner activated.";
-    if (lower.includes("tv")) return "DONE. TV is now ON.";
-    if (lower.includes("fan")) return "DONE. Fan activated.";
-    if (lower.includes("speaker")) return "DONE. Speaker is now ON.";
-    return "DONE. Device is now ON.";
-  }
-  if (
-    lower.includes("turn off") ||
-    lower.includes("switch off") ||
-    lower.includes("disable")
-  ) {
-    if (lower.includes("light") || lower.includes("lamp"))
-      return "DONE. Light is now OFF.";
-    if (lower.includes("ac") || lower.includes("air"))
-      return "DONE. Air conditioner deactivated.";
-    if (lower.includes("tv")) return "DONE. TV is now OFF.";
-    if (lower.includes("fan")) return "DONE. Fan deactivated.";
-    if (lower.includes("speaker")) return "DONE. Speaker is now OFF.";
-    return "DONE. Device is now OFF.";
-  }
-  if (
-    lower.includes("status") ||
-    lower.includes("state") ||
-    lower.includes("what")
-  ) {
-    return "STATUS REPORT: Kitchen light ON. Fridge ON at 4C. Living room TV ON. Speaker ON at VOL 40. Master bedroom AC ON at 19C, ceiling fan ON at SPD 2.";
-  }
-  if (
-    lower.includes("temp") ||
-    lower.includes("cold") ||
-    lower.includes("warm")
-  ) {
-    return "TEMPERATURE noted. Adjusting climate devices.";
-  }
-  return `COMMAND RECEIVED: "${command.toUpperCase()}". Request processed.`;
-}
-
-async function simulateStream(
-  text: string,
-  onChunk: (c: string) => void,
-  onDone: () => void,
-): Promise<void> {
-  for (const char of text) {
-    await new Promise<void>((r) => setTimeout(r, 20));
-    onChunk(char);
-  }
-  onDone();
-}
-
 export default function ChatPanel() {
   const messages = useStore((s) => s.messages);
   const isStreaming = useStore((s) => s.isStreaming);
-  const { addMessage, appendContent, setStatus, setStreaming } = useStore();
+  const { addMessage, setStreaming } = useStore();
 
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const {
-    start,
-    reset,
-    status,
-    toolUses,
-    finalResponse,
-    error,
-    isPending,
-    jobId,
-  } = useAgentStream(
+  const { start } = useAgentStream(
     (msgId: string, msg: string, chatStatus: ChatMessage["status"]) =>
       addMessage({
         id: msgId,
@@ -107,27 +39,6 @@ export default function ChatPanel() {
       status: "done",
     });
     await start(command);
-
-    // const userId = crypto.randomUUID();
-    // addMessage({ id: userId, role: "user", content: command, status: "done" });
-
-    // const agentId = crypto.randomUUID();
-    // addMessage({
-    //   id: agentId,
-    //   role: "agent",
-    //   content: "",
-    //   status: "streaming",
-    // });
-    // setStreaming(true);
-
-    // await simulateStream(
-    //   mockResponse(command),
-    //   (chunk) => appendContent(agentId, chunk),
-    //   () => {
-    //     setStatus(agentId, "done");
-    //     setStreaming(false);
-    //   },
-    // );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

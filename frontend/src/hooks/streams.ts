@@ -119,12 +119,10 @@ export function useAgentStream(
         );
 
         if (payload.name === "adjust_device") {
-          console.log(payload.output);
           const adjustment = DeviceAdjustDTO.safeParse(
             JSON.parse(payload.output),
           );
           if (!adjustment.success) {
-            console.log(adjustment.error);
             clearOngoingMessages();
             addMessage(
               crypto.randomUUID(),
