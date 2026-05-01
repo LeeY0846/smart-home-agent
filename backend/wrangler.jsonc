@@ -22,6 +22,7 @@
 		"ANTHROPIC_BASE_URL": "https://api.minimaxi.com/anthropic",
 		"MODEL_ID": "MiniMax-M2.7",
 		"PORT": "5050",
+		"ANTHROPIC_API_KEY": "test-key",
 	},
 	"routes": [
 		{
