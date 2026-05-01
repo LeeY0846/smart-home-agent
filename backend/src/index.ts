@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { env } from 'cloudflare:workers';
 import express from 'express';
 import { loopAgent, sendMessage, streamMessage } from './agent.js';
@@ -11,7 +10,7 @@ import { logEntry } from './libs/logger.js';
 import { httpServerHandler } from 'cloudflare:node';
 
 const app = express();
-const port = Number(process.env.PORT) || 5050;
+const port = Number(env.PORT) || 5050;
 
 app.use(
 	cors({
@@ -21,31 +20,8 @@ app.use(
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
 	res.json({ message: 'Connected' });
-});
-
-app.get('/test-stream', async (_req, res) => {
-	const stream = streamMessage([{ content: 'Who are you', role: 'user' }]).on('thinking', (text) => {
-		console.log(text);
-	});
-
-	const message = await stream.finalMessage();
-
-	res.json({
-		responses: message.content,
-		tokenUsage: message.usage,
-	});
-});
-
-app.post('/test-send', async (req, res) => {
-	const { command } = req.body;
-
-	const message = await sendMessage([{ content: command, role: 'user' }]);
-	res.json({
-		responses: message.content,
-		tokenUsage: message.usage,
-	});
 });
 
 function setupSseHeaders(res: Response): void {
@@ -61,7 +37,7 @@ function writeSse<K extends keyof AgentSseEventMap>(res: Response, event: K, dat
 	res.write(`data: ${JSON.stringify(data)}\n\n`);
 }
 
-app.post('/agent', async (req: Request<{ message?: string; devices: Device[] }>, res) => {
+app.post('/api/agent', async (req: Request<{ message?: string; devices: Device[] }>, res) => {
 	const { message, devices } = req.body;
 	const result = z.string().safeParse(message);
 	if (!result.success) {
@@ -93,7 +69,7 @@ app.post('/agent', async (req: Request<{ message?: string; devices: Device[] }>,
 	});
 });
 
-app.get('/agent/:jobId/stream', async (req: Request<{ jobId: string }>, res): Promise<void> => {
+app.get('/api/agent/:jobId/stream', async (req: Request<{ jobId: string }>, res): Promise<void> => {
 	const { jobId } = req.params;
 	const jobObject = await env.SMART_HOME_BUCKET.get(jobId);
 
@@ -165,8 +141,6 @@ app.get('/agent/:jobId/stream', async (req: Request<{ jobId: string }>, res): Pr
 	}
 });
 
-app.listen(port, () => {
-	console.log(`Server running at http://localhost:${port}`);
-});
+app.listen(port);
 
 export default httpServerHandler({ port });

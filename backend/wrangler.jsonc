@@ -11,11 +11,24 @@
 		"enabled": true,
 	},
 	"upload_source_maps": true,
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"r2_buckets": [
 		{
 			"bucket_name": "smart-home-bucket",
 			"binding": "SMART_HOME_BUCKET",
+		},
+	],
+	"vars": {
+		"ANTHROPIC_BASE_URL": "https://api.minimaxi.com/anthropic",
+		"MODEL_ID": "MiniMax-M2.7",
+		"PORT": "5050",
+	},
+	"routes": [
+		{
+			"pattern": "smart-home-agent.yang-dev.cc/api*",
+			"zone_name": "yang-dev.cc",
 		},
 	],
 	/**
