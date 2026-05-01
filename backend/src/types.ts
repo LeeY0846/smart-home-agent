@@ -1,4 +1,4 @@
-import type { Device } from "./libs/deviceManager.js";
+import type { Device } from "./lib/deviceManager.js";
 
 export type AgentSseEventMap = {
   connected: { jobId: string };

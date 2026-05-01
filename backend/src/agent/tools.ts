@@ -1,5 +1,5 @@
 import type { ToolUnion } from '@anthropic-ai/sdk/resources';
-import type { DeviceManager } from './libs/deviceManager.js';
+import type { DeviceManager } from '../lib/deviceManager.js';
 
 export const TOOLS = [
 	{
