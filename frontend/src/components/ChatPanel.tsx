@@ -136,7 +136,7 @@ export default function ChatPanel() {
             placeholder="ENTER COMMAND..."
             disabled={isStreaming}
             style={{
-              fontSize: "var(--px-size-md)",
+              fontSize: "var(--px-input-font-size)",
               padding: "8px",
               backgroundColor: "var(--px-card)",
               border: "2px solid var(--px-border)",

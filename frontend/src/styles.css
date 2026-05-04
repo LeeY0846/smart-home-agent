@@ -25,6 +25,7 @@ body {
   --px-size-base: 10px;  /* main device/room labels              */
   --px-size-md:   11px;  /* textarea, primary content            */
   --px-size-lg:   13px;  /* section headers                      */
+  --px-input-font-size: var(--px-size-md);
   --px-btn-font:  0.55rem;
   --px-btn-pad:   5px 10px;
 }
@@ -91,6 +92,13 @@ body {
 
   .px-icon-room { width: 52px; height: 52px; }
   .px-icon-card { width: 42px; height: 42px; }
+}
+
+@media (pointer: coarse) {
+  :root {
+    /* iOS zooms focused form controls below 16px. Keep pinch zoom available. */
+    --px-input-font-size: max(16px, var(--px-size-md));
+  }
 }
 
 @media (max-width: 639px) {
