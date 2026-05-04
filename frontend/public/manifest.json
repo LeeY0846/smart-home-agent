@@ -1,6 +1,6 @@
 {
-  "short_name": "TanStack App",
-  "name": "Create TanStack App Sample",
+  "short_name": "Smart Home Agent",
+  "name": "An AI-powered smart home simulator",
   "icons": [
     {
       "src": "favicon.ico",
